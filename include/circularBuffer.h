@@ -1,15 +1,16 @@
 #ifndef CIRCULARBUFFER_H
 #define CIRCULARBUFFER_H
 
+#include <QObject>
 #include <QIODevice>
-#include <QByteArray>
-#include <QTest>
 
 #include <boost/circular_buffer.hpp>
 
+#include "trikSound_global.h"
+
 namespace triksound {
 
-class CircularBuffer : public QIODevice
+class TRIKSOUNDSHARED_EXPORT CircularBuffer : public QIODevice
 {
 	Q_OBJECT
 public:
@@ -52,30 +53,30 @@ private slots:
 	 * TEST SLOTS
 	 ********************************************************************************/
 
-	// test writing to the buffer without overflow
-	void writeTest();
-	// test writing to the buffer with overflow (circlular buffer must start write to the begining after overflow)
-	void writeOverflowTest();
-	// test bytesAvailable() method
-	void bytesAvailableTest();
-	// test reading from buffer (which isn't overflowed yet)
-	void readTest();
-	// test readint from buffer (not all available bytes)
-	void readTest2();
-	// test reading from buffer which was overflowed
-	void readOverflowTest();
-	// test more complicated case of reading from overflowed buffer
-	void readOverflowTest2();
-	// test skip of QIODevice cache (from overflowed buffer)
-	void readQIODeviceCacheTest();
-	// test readAll()
-	void readAllTest();
-	// test the emiting of readyRead() signal after writing to buffer
-	void readyReadSignalTest();
-	// write() benchmark test
-	void writeBenchmark();
-	// read() benchmark test
-	void readBenchmark();
+//	// test writing to the buffer without overflow
+//	void writeTest();
+//	// test writing to the buffer with overflow (circlular buffer must start write to the begining after overflow)
+//	void writeOverflowTest();
+//	// test bytesAvailable() method
+//	void bytesAvailableTest();
+//	// test reading from buffer (which isn't overflowed yet)
+//	void readTest();
+//	// test readint from buffer (not all available bytes)
+//	void readTest2();
+//	// test reading from buffer which was overflowed
+//	void readOverflowTest();
+//	// test more complicated case of reading from overflowed buffer
+//	void readOverflowTest2();
+//	// test skip of QIODevice cache (from overflowed buffer)
+//	void readQIODeviceCacheTest();
+//	// test readAll()
+//	void readAllTest();
+//	// test the emiting of readyRead() signal after writing to buffer
+//	void readyReadSignalTest();
+//	// write() benchmark test
+//	void writeBenchmark();
+//	// read() benchmark test
+//	void readBenchmark();
 private:
 	typedef boost::circular_buffer<char>::iterator cbIterator;
 

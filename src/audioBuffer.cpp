@@ -1,5 +1,7 @@
 #include "include/audioBuffer.h"
 
+#include <QDebug>
+
 #include <cstring>
 
 using namespace triksound;

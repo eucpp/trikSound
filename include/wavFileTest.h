@@ -21,7 +21,7 @@ private slots:
 		mHeader.setChannels(1);
 		mHeader.setSampleType(QAudioFormat::SignedInt);
 		mFile.setFileName("wavFileTest.wav");
-		mFile.open(WavFile::WriteOnly, mHeader);
+		mFile.open(triksound::WavFile::WriteOnly, mHeader);
 
 		short* signal = new short[4];
 		signal[0] = 32767;
@@ -40,7 +40,7 @@ private slots:
 	// тестируем запись/чтение заголовка wav файла
 	void readWriteHeaderTest()
 	{
-		mFile.open(WavFile::ReadOnly);
+		mFile.open(triksound::WavFile::ReadOnly);
 
 		QAudioFormat readFormat = mFile.getHeader();
 
@@ -49,7 +49,7 @@ private slots:
 	// тестируем кол-во записанных байт
 	void readWriteSignalTest1()
 	{
-		mFile.open(WavFile::WriteOnly, mHeader);
+		mFile.open(triksound::WavFile::WriteOnly, mHeader);
 
 		int samplesWritten = mFile.write(mBuffer);
 
@@ -59,11 +59,11 @@ private slots:
 	// тестируем запись/чтение сигнала в файл
 	void readWriteSignalTest2()
 	{
-		mFile.open(WavFile::WriteOnly, mHeader);
+		mFile.open(triksound::WavFile::WriteOnly, mHeader);
 
 		mFile.write(mBuffer);
 		mFile.close();
-		mFile.open(WavFile::ReadOnly);
+		mFile.open(triksound::WavFile::ReadOnly);
 		triksound::AudioBuffer readSignal = mFile.readAll();
 
 		QCOMPARE(readSignal, mBuffer);
@@ -71,28 +71,28 @@ private slots:
 	// тестируем запись чтение части сигнала
 	void readWriteSignalTest3()
 	{
-		mFile.open(WavFile::WriteOnly, mHeader);
+		mFile.open(triksound::WavFile::WriteOnly, mHeader);
 
 		mFile.write(mBuffer, 3);
 		mFile.close();
-		mFile.open(WavFile::ReadOnly);
+		mFile.open(triksound::WavFile::ReadOnly);
 		triksound::AudioBuffer readSignal(mFile.read(2));
 
 		QCOMPARE(readSignal, mBuffer.subBuffer(0, 2));
 	}
 	void sizeTest()
 	{
-		mFile.open(WavFile::WriteOnly, mHeader);
+		mFile.open(triksound::WavFile::WriteOnly, mHeader);
 		mFile.write(mBuffer);
 
 		QCOMPARE(mFile.size(), 4);
 	}
 	void seekPosTest()
 	{
-		mFile.open(WavFile::WriteOnly, mHeader);
+		mFile.open(triksound::WavFile::WriteOnly, mHeader);
 		mFile.write(mBuffer);
 		mFile.close();
-		mFile.open(WavFile::ReadOnly);
+		mFile.open(triksound::WavFile::ReadOnly);
 
 		mFile.seek(1);
 
@@ -107,7 +107,7 @@ private slots:
 	// проверяем запись "с наложением" данных.
 	void writeTest()
 	{
-		mFile.open(WavFile::WriteOnly, mHeader);
+		mFile.open(triksound::WavFile::WriteOnly, mHeader);
 
 		mFile.write(mBuffer);
 		mFile.seek(1);
@@ -119,11 +119,11 @@ private slots:
 	// проверяем добавление в существующий файл.
 	void appendTest()
 	{
-		mFile.open(WavFile::WriteOnly, mHeader);
+		mFile.open(triksound::WavFile::WriteOnly, mHeader);
 		mFile.write(mBuffer);
 		mFile.close();
 
-		mFile.open(WavFile::Append);
+		mFile.open(triksound::WavFile::Append);
 		short* signal2 = new short[2];
 		signal2[0] = 0;
 		signal2[1] = 0;
@@ -145,16 +145,16 @@ private slots:
 			badFile.close();
 
 			mFile.setFileName("testUncorrectWavFile.txt");
-			mFile.open(WavFile::ReadOnly);
+			mFile.open(triksound::WavFile::ReadOnly);
 
 			QFAIL("Exception expected");
 		}
-		catch (WavFile::OpenFileExc)
+		catch (triksound::WavFile::OpenFileExc)
 		{
 		}
 	}
 private:
-	WavFile mFile;
+	triksound::WavFile mFile;
 	QAudioFormat mHeader;
 	triksound::AudioBuffer mBuffer;
 };

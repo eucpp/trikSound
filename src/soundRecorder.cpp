@@ -29,6 +29,9 @@ size_t SoundRecorder::getFrameLength() const
 
 void SoundRecorder::setFrameLength(size_t length)
 {
+	if (mAudioInput.state() == QAudio::StoppedState) {
+		return;
+	}
 	mFrameLength = length;
 	mBuffer.setCapacity(length * 10);
 }

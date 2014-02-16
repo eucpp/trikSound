@@ -5,7 +5,7 @@
 #include <QAudioOutput>
 
 #include "soundRecorder.h"
-#include "ringModulator.h"
+//#include "ringModulator.h"
 
 /**
  * @brief The AudioProcessor class capture audio data from mic,
@@ -24,7 +24,7 @@ public slots:
 private:
 	triksound::SoundRecorder mRecorder;
 	QAudioOutput mOut;
-	RingModulator mModulator;
+//	RingModulator mModulator;
 	int mDelay;
 	triksound::CircularBuffer mOutBuffer;
 	triksound::AudioBuffer mSine;

@@ -18,7 +18,7 @@ PocketsphinxDecoder::PocketsphinxDecoder(QString pathToHmm, QString pathToLm, QS
 		mIsReady = false;
 		mInitError = INCORRECT_ARGUMENTS;
 	}
-	mDecoder = ps_init(config);
+	mDecoder = ps_init(mConfig);
 	if (mDecoder == NULL) {
 		mIsReady = false;
 		mInitError = DECODER_INIT_ERROR;
@@ -54,7 +54,7 @@ PocketsphinxDecoder::Command PocketsphinxDecoder::recognize(AudioBuffer buffer)
 		emit error(mRecognitionError);
 	}
 
-	char* str = NULL;
+	const char* str = NULL;
 	QString qstr = "";
 	double accuracy = 0;
 	int score;

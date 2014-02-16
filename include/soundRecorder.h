@@ -9,6 +9,7 @@
 	#include <QtMultimediaKit/QAudioInput>
 #endif
 
+#include "trikSound_global.h"
 #include "circularBuffer.h"
 #include "audioBuffer.h"
 
@@ -22,12 +23,12 @@ namespace triksound {
  *		  You can specify the size of this buffer by passing its length in constructor or
  *		  by calling the setFrameLength() method.
  */
-class SoundRecorder : public QObject
+class TRIKSOUNDSHARED_EXPORT SoundRecorder : public QObject
 {
 	Q_OBJECT
 public:
 	/**
-	 * @brief Construct new SoundRecorder with default audio input device
+	 * @brief Construct new SoundRecorder with default audio input device.
 	 * @param format Capture format
 	 */
 	SoundRecorder(const QAudioFormat& format = AudioBuffer::getDefaultFormat(), size_t frameLength = 1024);
@@ -60,8 +61,8 @@ public:
 	QAudioDeviceInfo getDevice() const;
 signals:
 	/**
-	 * @brief This signal is emited when the new frame is captured
-	 * @param frame Buffer containing new frame
+	 * @brief This signal is emited when the new frame is captured.
+	 * @param frame Buffer containing new frame.
 	 */
 	void captured(const AudioBuffer& frame);
 public slots:

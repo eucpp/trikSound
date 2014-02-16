@@ -13,9 +13,6 @@ AudioProcessor::AudioProcessor(int freq, QObject *parent) :
 	mOutBuffer(mDelay * mRecorder.getFormat().sampleRate() + 10 * mRecorder.getFrameLength())
 {
 	mOutBuffer.open(QIODevice::ReadWrite);
-	mSine = SineOscillator::generate(freq, 32768,
-							 mRecorder.getFrameLength() / (mRecorder.getFormat().sampleSize() / 8),
-							 mRecorder.getFormat());
 }
 
 void AudioProcessor::start()
@@ -34,7 +31,7 @@ void AudioProcessor::stop()
 
 void AudioProcessor::handleFrame(AudioBuffer buffer)
 {
-	mOutBuffer.write(mModulator.ringModulation(buffer, mSine).bytes());
+//	mOutBuffer.write(mModulator.ringModulation(buffer, mSine).bytes());
 }
 
 void AudioProcessor::startPlaying()

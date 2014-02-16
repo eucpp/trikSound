@@ -4,8 +4,6 @@
 #include <QObject>
 #include <QAudioFormat>
 #include <QByteArray>
-#include <QSysInfo>
-#include <QDebug>
 
 #ifdef TRIK
 	#include <QtMultimedia/QAudioFormat>
@@ -13,12 +11,14 @@
 	#include <QtMultimediaKit/QAudioFormat>
 #endif
 
+#include "trikSound_global.h"
+
 namespace triksound {
 
 /**
  * @brief The AudioBuffer class is used for storage raw audio data along with their format.
  */
-class AudioBuffer
+class TRIKSOUNDSHARED_EXPORT AudioBuffer
 {
 public:
 	AudioBuffer(const QAudioFormat& format = getDefaultFormat());

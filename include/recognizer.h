@@ -3,8 +3,8 @@
 
 #include <QObject>
 
-#include "../soundRecorder.h"
-#include "pocketsphinxWrap.h"
+#include "include/soundRecorder.h"
+#include "include/pocketsphinxDecoder.h"
 
 class Recognizer : public QObject
 {
@@ -20,10 +20,10 @@ public slots:
 	void stop();
 
 private:
-	TrikCapture::SoundRecorder mRecorder;
-	PocketsphinxDecoder mPS;
+	triksound::SoundRecorder mRecorder;
+	triksound::PocketsphinxDecoder mPS;
 
-	typedef TrikCapture::AudioBuffer AudioBuffer;
+	typedef triksound::AudioBuffer AudioBuffer;
 
 private slots:
 	void handleFrame(AudioBuffer buffer);

@@ -4,9 +4,9 @@
 #include <QObject>
 
 #include <limits>
-//#include <pocketsphinx/cmdln_macro.h>
 #include <pocketsphinx/pocketsphinx.h>
 
+#include "trikSound_global.h"
 #include "include/audioBuffer.h"
 
 namespace triksound {
@@ -14,7 +14,7 @@ namespace triksound {
 /**
   * The PocketsphinxWrap class provide a Qt-based wrap for pocketsphinx library.
   */
-class PocketsphinxDecoder : public QObject
+class TRIKSOUNDSHARED_EXPORT PocketsphinxDecoder : public QObject
 {
 	Q_OBJECT
 public:
@@ -50,8 +50,7 @@ public:
 	  * @param pathToLm Path to grammar file.
 	  * @param pathToDict Path to dictionary file.
 	  */
-	PocketsphinxDecoder(QString pathToHmm, QString pathToLm, QString pathToDict)
-		throw(PocketSphinxInitExc);
+	PocketsphinxDecoder(QString pathToHmm, QString pathToLm, QString pathToDict);
 	~PocketsphinxDecoder();
 
 	/**

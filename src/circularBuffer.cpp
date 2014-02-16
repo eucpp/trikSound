@@ -1,7 +1,7 @@
 #include "include/circularBuffer.h"
 
 #include <QDebug>
-#include <QSignalSpy>
+//#include <QSignalSpy>
 
 using namespace triksound;
 
@@ -183,6 +183,8 @@ qint64 CircularBuffer::writeData(const char *data, qint64 len)
 /********************************************************************************
  * TEST SLOTS
  ********************************************************************************/
+
+/*
 
 void CircularBuffer::writeTest()
 {
@@ -460,3 +462,4 @@ void CircularBuffer::readBenchmark()
 	}
 }
 
+*/

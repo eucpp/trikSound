@@ -5,7 +5,7 @@
 #include "iostream"
 
 using namespace std;
-using namespace TrikCapture;
+using namespace triksound;
 
 Recognizer::Recognizer(const QString& pathToHmm,
 					   const QString& pathToLm,
@@ -34,10 +34,10 @@ void Recognizer::handleFrame(AudioBuffer buffer)
 	PocketsphinxDecoder::Command cmd = mPS.recognize(buffer);
 
 	cout << "word: " ;
-	if (cmd.command == QString()) {
+	if (cmd.getText() == QString()) {
 		cout << "..." << endl;
 	}
 	else {
-		cout << (cmd.command + "\n").toAscii().data() << endl;
+		cout << (cmd.getText() + "\n").toAscii().data() << endl;
 	}
 }

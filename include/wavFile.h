@@ -1,9 +1,7 @@
 #pragma once
 
-
-#include <iostream>
-#include <cstring>
 #include <QObject>
+#include <QFile>
 
 #ifdef TRIK
 #include <QtMultimedia/QAudioInput>
@@ -11,11 +9,12 @@
 #include <QtMultimediaKit/QAudioInput>
 #endif
 
-#include <QFile>
-
+#include "trikSound_global.h"
 #include "audioBuffer.h"
 
-class WavFile
+namespace triksound {
+
+class TRIKSOUNDSHARED_EXPORT WavFile
 {
 public:
 
@@ -35,12 +34,12 @@ public:
 	WavFile();
 	WavFile(const QString& filename);
 
-	void open(OpenModes mode);
+	bool open(OpenModes mode);
 	/**
 	  * @param format This parameter is used if file opened in WriteOnly mode.
 	  *				  Must set sample size and sample rate.
 	  */
-	void open(OpenModes mode, const QAudioFormat& format);
+	bool open(OpenModes mode, const QAudioFormat& format);
 
 	void close();
 	/**
@@ -54,7 +53,6 @@ public:
 	/**
 	  * @brief Set the header of file (for not opened files).
 	  *		   If file will be opened for writing, this header will be used for saving the audio format.
-	  *
 	  * @param format New format information.
 	  */
 	void setHeader(const QAudioFormat& format);
@@ -72,23 +70,32 @@ public:
 	int pos() const;
 
 	/**
-	  * @brief Returns file size in samples.
+	  * @brief Returns file size in bytes (including size of header).
 	  */
 	int size() const;
+	/**
+	  * @brief Returns file size in samples.
+	  */
+	int samplesNum() const;
 
-	triksound::AudioBuffer read(int length) throw(ReadExc);
-	triksound::AudioBuffer readAll() throw(ReadExc);
+	/**
+	 * @brief Read max length samples from file.
+	 */
+	AudioBuffer read(int length);
+	/**
+	 * @brief Read all file into audio buffer.
+	 */
+	AudioBuffer readAll();
 
 	/**
 	  * @brief Write audio buffer to the file.
 	  *
-	  * @param buffer Buffer for writing.
+	  * @param buffer Buffer for writing. Must have the same audio format as file.
+	  *        Otherwise data will not be written.
 	  * @param length Length of writing samples (equal to audio buffer size by default)
-	  * @return Num of written bytes.
-	  * @throw WriteDisabledExc Thrown if file is opened in ReadOnly mode.
-	  * @throw FormatMismatchExc Thrown if formats of buffer and file are not equal.
+	  * @return Num of written bytes or -1 if an error occured.
 	  */
-	int write(triksound::AudioBuffer buffer, int length = -1) throw(WriteExc, FormatMismatchExc);
+	int write(AudioBuffer buffer, int length = -1);
 private:
 	class UncorrectHeader {};
 	struct Header
@@ -122,4 +129,5 @@ private:
 	bool mHeaderSetFlag;
 };
 
+}
 

@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += multimedia
+QT += core
 
-QT       -= gui
+QT -= gui
 
 TARGET = trikSound
 TEMPLATE = lib
@@ -15,6 +15,12 @@ DEFINES += TRIKSOUND_LIBRARY
 
 CONFIG += mobility
 MOBILITY += multimedia
+
+# подключаем pocketsphinx
+INCLUDEPATH += /usr/local/include/sphinxbase \
+    /usr/local/include/pocketsphinx
+
+LIBS+= -L/usr/local/lib -lpocketsphinx -lsphinxbase
 
 trik {
     message("Building for Trik")
@@ -31,9 +37,8 @@ trik {
     UI_DIR = $$BUILD_FOLDER/
 }
 
-SOURCES += src/trikSound.cpp \
+SOURCES += \
     src/wavFile.cpp \
-    src/trikSound.cpp \
     src/soundRecorder.cpp \
     src/recognizer.cpp \
     src/circularBuffer.cpp \
@@ -41,18 +46,18 @@ SOURCES += src/trikSound.cpp \
     src/audioBuffer.cpp \
     src/pocketsphinxDecoder.cpp
 
-HEADERS += include/trikSound.h \
+HEADERS += \
     include/trikSound_global.h \
     include/wavFileTest.h \
     include/wavFile.h \
-    include/trikSound.h \
     include/trikSound_global.h \
     include/soundRecorder.h \
     include/recognizer.h \
     include/circularBuffer.h \
     include/audioProcessor.h \
     include/audioBuffer.h \
-    include/pocketsphinxDecoder.h
+    include/pocketsphinxDecoder.h \
+    include/trikSound.h
 
 unix:!symbian {
     maemo5 {

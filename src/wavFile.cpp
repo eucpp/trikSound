@@ -1,6 +1,8 @@
 #include "include/wavFile.h"
 
-using triksound::AudioBuffer;
+#include <QDebug>
+
+using namespace triksound;
 
 WavFile::WavFile():
 	mFile(),
@@ -13,58 +15,74 @@ WavFile::WavFile(const QString &filename):
 	mHeaderSetFlag(false)
 {}
 
-void WavFile::open(OpenModes mode)
+bool WavFile::open(OpenModes mode)
 {
-	open(mode, QAudioFormat());
+	return open(mode, QAudioFormat());
 }
 
-void WavFile::open(OpenModes mode, const QAudioFormat& format)
+bool WavFile::open(OpenModes mode, const QAudioFormat& format)
 {
 	try
 	{
 		mOpenmode = mode;
 		if (mOpenmode == ReadOnly)
 		{
-			if (!mFile.open(QIODevice::ReadOnly))
-				throw OpenFileExc();
-			if (mFile.size() > 0 && mFile.size() < 44)
-				throw OpenFileExc();
+			if (!mFile.open(QIODevice::ReadOnly)) {
+				qDebug() << "Can't open wav file " << mFile.fileName() << " in ReadOnly mode";
+				return false;
+			}
+			if (mFile.size() > 0 && mFile.size() < 44) {
+				qDebug() << "File " << mFile.fileName() << " has incorrect wav header";
+				return false;
+			}
 			seek(0);
 			mHeader = readHeader();
 			mHeaderSetFlag = true;
-			return;
+			return true;
 		}
 		else if (mOpenmode == WriteOnly)
 		{
-			if (!mFile.open(QIODevice::WriteOnly))
-				throw OpenFileExc();
-			if (isCorrectFormat(format))
-			{
+			if (!mFile.open(QIODevice::WriteOnly)) {
+				qDebug() << "Can't open wav file " << mFile.fileName() << " in WriteOnly mode";
+				return false;
+			}
+			if (isCorrectFormat(format)) {
 				mHeader = format;
 				writeHeader(mHeader);
 				mHeaderSetFlag = true;
 			}
+			else {
+				qDebug() << "Pass incorrect format when open wav file " << mFile.fileName();
+			}
 			seek(0);
-			return;
+			return true;
 		}
 		else if (mOpenmode == Append)
 		{
-			if (!mFile.open(QIODevice::ReadOnly))
-				throw OpenFileExc();
-			if (mFile.size() > 0 && mFile.size() < 44)
-				throw OpenFileExc();
+			if (!mFile.open(QIODevice::ReadOnly)) {
+				qDebug() << "Can't read header of wav file " << mFile.fileName();
+
+				return false;
+			}
+			if (mFile.size() > 0 && mFile.size() < 44) {
+				qDebug() << "File " << mFile.fileName() << " has incorrect wav header";
+				return false;
+			}
 			mHeader = readHeader();
 			mHeaderSetFlag = true;
 			mFile.close();
-			if (!mFile.open(QIODevice::Append))
-				throw OpenFileExc();
+			if (!mFile.open(QIODevice::Append)) {
+				qDebug() << "Can't open wav file " << mFile.fileName() << " in Append mode";
+				return false;
+			}
 			seek(size());
-			return;
+			return true;
 		}
 	}
 	catch (UncorrectHeader exc)
 	{
-		throw OpenFileExc();
+		qDebug() << "File " << mFile.fileName() << " has incorrect wav header";
+		return false;
 	}
 
 	/*
@@ -154,28 +172,37 @@ int WavFile::pos() const
 
 int WavFile::size() const
 {
+	return mFile.size();
+}
+
+int WavFile::samplesNum() const
+{
 	if (mOpenmode == NotOpen)
 		return 0;
 	return (mFile.size() - 44) / (mHeader.sampleSize() / 8);
 }
 
-AudioBuffer WavFile::read(int length) throw(ReadExc)
+AudioBuffer WavFile::read(int length)
 {
-	if (mOpenmode == NotOpen)
-		throw ReadExc();
-	if (mOpenmode == WriteOnly)
-		throw ReadExc();
+	if (mOpenmode == NotOpen) {
+		return AudioBuffer();
+	}
+	if (mOpenmode == WriteOnly) {
+		return AudioBuffer();
+	}
 	int bytesNum = length * mHeader.sampleSize() / 8;
 	QByteArray bytes = mFile.read(bytesNum);
 	return AudioBuffer(bytes, mHeader);
 }
 
-AudioBuffer WavFile::readAll() throw(ReadExc)
+AudioBuffer WavFile::readAll()
 {
-	if (mOpenmode == NotOpen)
-		throw ReadExc();
-	if (mOpenmode == WriteOnly)
-		throw ReadExc();
+	if (mOpenmode == NotOpen) {
+		return AudioBuffer();
+	}
+	if (mOpenmode == WriteOnly) {
+		return AudioBuffer();
+	}
 	int currPos = pos();
 	seek(0);
 	QByteArray bytes = mFile.readAll();
@@ -183,14 +210,17 @@ AudioBuffer WavFile::readAll() throw(ReadExc)
 	return AudioBuffer(bytes, mHeader);
 }
 
-int WavFile::write(AudioBuffer buffer, int length) throw(WriteExc, FormatMismatchExc)
+int WavFile::write(AudioBuffer buffer, int length)
 {
-	if ((mOpenmode == NotOpen) || !mHeaderSetFlag)
-		return 0;
-	if (mOpenmode == ReadOnly)
-		throw WriteExc();
-	if (mHeader != buffer.getFormat())
-		throw FormatMismatchExc();
+	if ((mOpenmode == NotOpen) || !mHeaderSetFlag) {
+		return -1;
+	}
+	if (mOpenmode == ReadOnly) {
+		return -1;
+	}
+	if (mHeader != buffer.getFormat()) {
+		return -1;
+	}
 	AudioBuffer subBuffer = buffer.subBuffer(0, length);
 	int n = mFile.write(reinterpret_cast<const char*>(subBuffer.constData()), subBuffer.size());
 	setDataSize(size() * (mHeader.sampleSize() / 8));
