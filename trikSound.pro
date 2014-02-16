@@ -17,8 +17,9 @@ CONFIG += mobility
 MOBILITY += multimedia
 
 # подключаем pocketsphinx
-INCLUDEPATH += /usr/local/include/sphinxbase \
-    /usr/local/include/pocketsphinx
+INCLUDEPATH += /usr/local/include/sphinxbase /usr/local/include/pocketsphinx
+
+INCLUDEPATH += include/ include/filters
 
 LIBS+= -L/usr/local/lib -lpocketsphinx -lsphinxbase
 
@@ -57,7 +58,9 @@ HEADERS += \
     include/audioProcessor.h \
     include/audioBuffer.h \
     include/pocketsphinxDecoder.h \
-    include/trikSound.h
+    include/filters/audioFilter.h \
+    include/audioPipe.h \
+    include/filters/soundCaptureFilter.h
 
 unix:!symbian {
     maemo5 {

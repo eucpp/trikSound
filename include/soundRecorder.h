@@ -11,12 +11,12 @@
 
 #include "trikSound_global.h"
 #include "circularBuffer.h"
-#include "audioBuffer.h"
+#include "audioFilter.h"
 
 namespace triksound {
 
 /**
- * @brief The SoundRecorder class used for real-time audio capturing.
+ * @brief The SoundRecorder class used for real-time audio capturing from device.
  *		  After an object creation and calling the start() slot object will emit captured() signal
  *		  every time when new bytes available.
  *		  This signal passes the buffer, which contains bytes of last frame.
