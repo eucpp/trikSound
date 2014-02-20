@@ -10,6 +10,7 @@ namespace triksound {
 
 /**
  * @brief The SoundCaptureFilter class provides AudioFilter interface for SoundRecorder class.
+ *        This filter has output, but has not input.
  */
 class TRIKSOUNDSHARED_EXPORT SoundCaptureFilter : public AudioFilter
 {

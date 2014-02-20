@@ -50,7 +50,9 @@ public:
 	  * @param pathToLm Path to grammar file.
 	  * @param pathToDict Path to dictionary file.
 	  */
-	PocketsphinxDecoder(QString pathToHmm, QString pathToLm, QString pathToDict);
+	PocketsphinxDecoder(QString pathToHmm = defaultHmm,
+						QString pathToLm = defaultLm,
+						QString pathToDict = defaultDict);
 	~PocketsphinxDecoder();
 
 	/**
@@ -66,6 +68,10 @@ public:
 	 * @brief Returns the type of error that last occurred during the recognition.
 	 */
 	RecognitionError recognitionError() const;
+
+	static const QString defaultHmm;
+	static const QString defaultLm;
+	static const QString defaultDict;
 public slots:
 	/**
 	  * @brief Tries to recognize command in audio data. Emits recognized signal when finished.

@@ -60,7 +60,9 @@ HEADERS += \
     include/pocketsphinxDecoder.h \
     include/filters/audioFilter.h \
     include/audioPipe.h \
-    include/filters/soundCaptureFilter.h
+    include/filters/soundCaptureFilter.h \
+    include/filters/playbackFilter.h \
+    include/filters/commandRecognitionFilter.h
 
 unix:!symbian {
     maemo5 {
