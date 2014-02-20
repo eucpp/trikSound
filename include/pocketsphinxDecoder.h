@@ -21,10 +21,13 @@ public:
 	/**
 	  * The Command class provides an voice command recognized by Pockesphinx.
 	  */
-	class Command
+	class TRIKSOUNDSHARED_EXPORT Command
 	{
 	public:
-		Command(const QString& cmd, double accur);
+		Command(const QString& cmd, double accur):
+			mText(cmd),
+			mAccuracy(accur)
+		{}
 
 		QString getText() const;
 		double getAccuracy() const;

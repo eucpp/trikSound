@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QIODevice>
+#include <QSharedPointer>
 
 #include <boost/circular_buffer.hpp>
 
@@ -15,6 +16,8 @@ class TRIKSOUNDSHARED_EXPORT CircularBuffer : public QIODevice
 	Q_OBJECT
 public:
 	explicit CircularBuffer(size_t n = 1024, QObject *parent = 0);
+	explicit CircularBuffer(QSharedPointer< boost::circular_buffer<char> > buf, QObject* parent = 0);
+
 
 	bool isSequential() const;
 
@@ -42,6 +45,7 @@ public:
 
 	void clear();
 
+	QSharedPointer< boost::circular_buffer<char> > getBoostBuffer();
 signals:
 
 private slots:
@@ -80,7 +84,7 @@ private slots:
 private:
 	typedef boost::circular_buffer<char>::iterator cbIterator;
 
-	boost::circular_buffer<char> mBuffer;
+	QSharedPointer< boost::circular_buffer<char> > mBuffer;
 	//cbIterator mStartReadingPos;
 	qint64 mPos;
 	qint64 mLostBytesNum;

@@ -23,7 +23,6 @@ public:
 	/**
 	 * @param decoder Pointer to decoder object. If NULL is passed, new one will be created.
 	 * @param stream Pointer to the text stream for text output. By default, this is stdout.
-	 * @param parent
 	 */
 	explicit CommandRecognitionFilter(const QSharedPointer<PocketsphinxDecoder>& decoder
 										= QSharedPointer<PocketsphinxDecoder>(NULL),

@@ -7,8 +7,17 @@ using namespace triksound;
 
 CircularBuffer::CircularBuffer(size_t n, QObject *parent) :
 	QIODevice(parent),
-	mBuffer(n),
+	mBuffer(new boost::circular_buffer<char>(n)),
 	//mStartReadingPos(mBuffer.begin()),
+	mPos(0),
+	mLostBytesNum(0),
+	mBytesAvailable(0)
+{
+}
+
+CircularBuffer::CircularBuffer(QSharedPointer<boost::circular_buffer<char> > buf, QObject* parent):
+	QIODevice(parent),
+	mBuffer(buf),
 	mPos(0),
 	mLostBytesNum(0),
 	mBytesAvailable(0)
@@ -30,7 +39,7 @@ void CircularBuffer::close()
 {
 	emit aboutToClose();
 	setErrorString("");
-	mBuffer.clear();
+	mBuffer->clear();
 	setOpenMode(NotOpen);
 }
 
@@ -41,7 +50,7 @@ qint64 CircularBuffer::pos() const
 
 qint64 CircularBuffer::size() const
 {
-	return mBuffer.size();
+	return mBuffer->size();
 }
 
 bool CircularBuffer::seek(qint64 pos)
@@ -63,12 +72,12 @@ bool CircularBuffer::reset()
 
 size_t CircularBuffer::capacity()
 {
-	return mBuffer.capacity();
+	return mBuffer->capacity();
 }
 
 void CircularBuffer::setCapacity(size_t n)
 {
-	mBuffer.set_capacity(n);
+	mBuffer->set_capacity(n);
 }
 
 qint64 CircularBuffer::bytesAvailable() const
@@ -100,21 +109,26 @@ bool CircularBuffer::waitForBytesWritten(int msecs)
 
 qint64 CircularBuffer::reserve() const
 {
-	return mBuffer.reserve();
+	return mBuffer->reserve();
 }
 
 void CircularBuffer::clear()
 {
-	mBuffer.clear();
+	mBuffer->clear();
 	mBytesAvailable = 0;
 	mPos = 0;
 	QIODevice::seek(QIODevice::pos() + QIODevice::bytesAvailable());
 }
 
+QSharedPointer<boost::circular_buffer<char> > CircularBuffer::getBoostBuffer()
+{
+	return mBuffer;
+}
+
 qint64 CircularBuffer::readData(char* data, qint64 maxlen)
 {
 	qint64 len = qMin(maxlen, mBytesAvailable);
-	std::uninitialized_copy(mBuffer.begin() + mPos, mBuffer.begin() + mPos + len, data);
+	std::uninitialized_copy(mBuffer->begin() + mPos, mBuffer->begin() + mPos + len, data);
 	mPos += len;
 	mBytesAvailable -= len;
 	return len;
@@ -124,8 +138,8 @@ qint64 CircularBuffer::readLineData(char* data, qint64 maxlen)
 {
 	int counter = 0;
 	char* ch = data;
-	boost::circular_buffer<char>::iterator itr = mBuffer.begin() + mPos;
-	for (; itr != mBuffer.end(), ch < data + maxlen; ++ch, ++itr) {
+	boost::circular_buffer<char>::iterator itr = mBuffer->begin() + mPos;
+	for (; itr != mBuffer->end(), ch < data + maxlen; ++ch, ++itr) {
 		if (*itr == '\n') {
 			break;
 		}
@@ -141,15 +155,15 @@ qint64 CircularBuffer::readLineData(char* data, qint64 maxlen)
 qint64 CircularBuffer::writeData(const char *data, qint64 len)
 {
 	int reserve = 0;
-	if (mBuffer.reserve() == 0) {
-		std::distance((mBuffer.begin() + mPos), mBuffer.end());
+	if (mBuffer->reserve() == 0) {
+		std::distance((mBuffer->begin() + mPos), mBuffer->end());
 	}
 	else {
-		reserve = mBuffer.reserve();
+		reserve = mBuffer->reserve();
 	}
 	if (len > reserve) {
 		size_t overflow = len - reserve;
-		overflow %= mBuffer.capacity();
+		overflow %= mBuffer->capacity();
 		if (overflow == 0) {
 			mPos = 0;
 		}
@@ -165,19 +179,19 @@ qint64 CircularBuffer::writeData(const char *data, qint64 len)
 //	}
 
 	// if len > size of buffer, drop all elements cached in QIODevice
-	if (len > mBuffer.capacity()) {
+	if (len > mBuffer->capacity()) {
 		QIODevice::seek(QIODevice::pos() + QIODevice::bytesAvailable());
 	}
 	// else if len > size of non-cached part of buffer, drop only rewrited elements
-	else if (len > mBuffer.capacity() - QIODevice::bytesAvailable()) {
-		QIODevice::seek(QIODevice::pos() + (len - (mBuffer.capacity() - QIODevice::bytesAvailable())));
+	else if (len > mBuffer->capacity() - QIODevice::bytesAvailable()) {
+		QIODevice::seek(QIODevice::pos() + (len - (mBuffer->capacity() - QIODevice::bytesAvailable())));
 	}
 	for (int i = 0; i < len; i++) {
-		mBuffer.push_back(data[i]);
+		mBuffer->push_back(data[i]);
 	}
-	mBytesAvailable = qMin(mBytesAvailable + len, (qint64)(mBuffer.capacity()));
+	mBytesAvailable = qMin(mBytesAvailable + len, (qint64)(mBuffer->capacity()));
 	emit readyRead();
-	return qMin((qint64)mBuffer.capacity(), len);
+	return qMin((qint64)mBuffer->capacity(), len);
 }
 
 /********************************************************************************

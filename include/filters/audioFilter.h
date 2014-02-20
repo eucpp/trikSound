@@ -20,6 +20,7 @@ public:
 	explicit AudioFilter(QObject *parent = 0):
 		QObject(parent)
 	{}
+	virtual ~AudioFilter() {}
 
 signals:
 	void output(const AudioBuffer& buf);
