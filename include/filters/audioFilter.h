@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "audioBuffer.h"
+#include "../audioBuffer.h"
 
 namespace triksound {
 

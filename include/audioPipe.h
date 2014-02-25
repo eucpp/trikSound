@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "audioFilter.h"
+#include "filters/audioFilter.h"
 #include "trikSound_global.h"
 
 namespace triksound {

@@ -7,7 +7,7 @@
 #include <pocketsphinx/pocketsphinx.h>
 
 #include "trikSound_global.h"
-#include "include/audioBuffer.h"
+#include "audioBuffer.h"
 
 namespace triksound {
 

@@ -11,7 +11,7 @@
 
 #include "trikSound_global.h"
 #include "circularBuffer.h"
-#include "audioFilter.h"
+#include "filters/audioFilter.h"
 
 namespace triksound {
 

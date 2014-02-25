@@ -4,8 +4,10 @@
 #include <QAudioDeviceInfo>
 #include <QAudioOutput>
 
+#include <QDebug>
+
 #include "audioFilter.h"
-#include "circularBuffer.h"
+#include "../circularBuffer.h"
 
 namespace triksound {
 
@@ -21,6 +23,7 @@ public:
 
 public slots:
 	void input(AudioBuffer buf);
+	void start();
 private:
 	CircularBuffer mBuffer;
 	QAudioOutput mOut;
@@ -41,8 +44,15 @@ inline void PlaybackFilter::input(AudioBuffer buf)
 {
 	if (buf.getFormat() == mOut.format()) {
 		mBuffer.write(buf.bytes());
-		mOut.start(&mBuffer);
+		if (mOut.state() != QAudio::ActiveState) {
+//			mOut.start(&mBuffer);
+		}
 	}
+}
+
+inline void PlaybackFilter::start()
+{
+	mOut.start(&mBuffer);
 }
 
 }

@@ -1,4 +1,6 @@
-#include "include/soundRecorder.h"
+#include "soundRecorder.h"
+
+#include <QDebug>
 
 using namespace triksound;
 
@@ -29,7 +31,7 @@ size_t SoundRecorder::getFrameLength() const
 
 void SoundRecorder::setFrameLength(size_t length)
 {
-	if (mAudioInput.state() == QAudio::StoppedState) {
+	if (mAudioInput.state() != QAudio::StoppedState) {
 		return;
 	}
 	mFrameLength = length;
@@ -53,6 +55,8 @@ void SoundRecorder::start()
 
 void SoundRecorder::stop()
 {
+	qDebug() << "stop";
+
 	mAudioInput.stop();
 	//disconnect(&mBuffer, SIGNAL(readyRead()), this, SLOT(readyReadHandler()));
 }

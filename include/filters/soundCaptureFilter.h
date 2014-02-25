@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "audioFilter.h"
-#include "soundRecorder.h"
+#include "../soundRecorder.h"
 
 namespace triksound {
 

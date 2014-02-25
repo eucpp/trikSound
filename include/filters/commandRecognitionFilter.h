@@ -7,7 +7,7 @@
 #include <QSharedPointer>
 
 #include "audioFilter.h"
-#include "pocketsphinxDecoder.h"
+#include "../pocketsphinxDecoder.h"
 
 namespace triksound {
 
