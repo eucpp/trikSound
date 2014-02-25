@@ -19,7 +19,7 @@ public:
 	explicit AudioPipe(const AudioFilter& in, const AudioFilter& out, QObject *parent = 0);
 };
 
-AudioPipe::AudioPipe(const AudioFilter& in, const AudioFilter& out, QObject* parent):
+inline AudioPipe::AudioPipe(const AudioFilter& in, const AudioFilter& out, QObject* parent):
 	QObject(parent)
 {
 	connect(&in, SIGNAL(output(AudioBuffer)), &out, SLOT(input(AudioBuffer)));

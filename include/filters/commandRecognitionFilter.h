@@ -38,7 +38,7 @@ private:
 	QSharedPointer<QTextStream> mStream;
 };
 
-CommandRecognitionFilter::CommandRecognitionFilter(const QSharedPointer<PocketsphinxDecoder>& decoder,
+inline CommandRecognitionFilter::CommandRecognitionFilter(const QSharedPointer<PocketsphinxDecoder>& decoder,
 												   const QSharedPointer<QTextStream>& stream,
 												   QObject* parent):
 	AudioFilter(parent),

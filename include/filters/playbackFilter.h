@@ -26,7 +26,7 @@ private:
 	QAudioOutput mOut;
 };
 
-PlaybackFilter::PlaybackFilter(const QAudioFormat& format,
+inline PlaybackFilter::PlaybackFilter(const QAudioFormat& format,
 							   const QAudioDeviceInfo& device,
 							   size_t bufSize,
 							   QObject* parent):
@@ -35,13 +35,13 @@ PlaybackFilter::PlaybackFilter(const QAudioFormat& format,
 	mOut(device, format)
 {
 	mBuffer.open(QIODevice::ReadWrite);
-	mOut.start(&mBuffer);
 }
 
 inline void PlaybackFilter::input(AudioBuffer buf)
 {
 	if (buf.getFormat() == mOut.format()) {
 		mBuffer.write(buf.bytes());
+		mOut.start(&mBuffer);
 	}
 }
 

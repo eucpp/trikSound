@@ -40,4 +40,5 @@ SOURCES += main.cpp
 
 HEADERS += \
     wavFileTest.h \
-    circularBufferTest.h
+    circularBufferTest.h \
+    playbackFilterTest.h

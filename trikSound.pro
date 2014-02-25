@@ -47,7 +47,6 @@ SOURCES += \
 
 HEADERS += \
     include/trikSound_global.h \
-    include/wavFileTest.h \
     include/wavFile.h \
     include/trikSound_global.h \
     include/soundRecorder.h \
