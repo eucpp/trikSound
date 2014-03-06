@@ -78,6 +78,7 @@ bool WavFile::open(OpenModes mode, const QAudioFormat& format)
 			seek(size());
 			return true;
 		}
+		return false;
 	}
 	catch (UncorrectHeader exc)
 	{
@@ -185,9 +186,11 @@ int WavFile::samplesNum() const
 AudioBuffer WavFile::read(int length)
 {
 	if (mOpenmode == NotOpen) {
+		qDebug() << "Wav file read() error. File not open.";
 		return AudioBuffer();
 	}
 	if (mOpenmode == WriteOnly) {
+		qDebug() << "Wav file read() error. File not open for reading.";
 		return AudioBuffer();
 	}
 	int bytesNum = length * mHeader.sampleSize() / 8;
@@ -198,9 +201,11 @@ AudioBuffer WavFile::read(int length)
 AudioBuffer WavFile::readAll()
 {
 	if (mOpenmode == NotOpen) {
+		qDebug() << "Wav file readAll() error. File not open.";
 		return AudioBuffer();
 	}
 	if (mOpenmode == WriteOnly) {
+		qDebug() << "Wav file readAll() error. File not open for reading.";
 		return AudioBuffer();
 	}
 	int currPos = pos();
@@ -213,12 +218,15 @@ AudioBuffer WavFile::readAll()
 int WavFile::write(AudioBuffer buffer, int length)
 {
 	if ((mOpenmode == NotOpen) || !mHeaderSetFlag) {
+		qDebug() << "Wav file write() error. File not open or header doesn't set.";
 		return -1;
 	}
 	if (mOpenmode == ReadOnly) {
+		qDebug() << "Wav file write() error. File not open for writing.";
 		return -1;
 	}
 	if (mHeader != buffer.getFormat()) {
+		qDebug() << "Wav file readAll() error. Buffer format doesn't match with file format.";
 		return -1;
 	}
 	AudioBuffer subBuffer = buffer.subBuffer(0, length);

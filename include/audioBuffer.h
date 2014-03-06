@@ -62,7 +62,7 @@ public:
 	 * @param length
 	 * @return
 	 */
-	AudioBuffer subBuffer(int pos, int length = -1);
+	AudioBuffer subBuffer(int pos, int length = -1) const;
 
 	bool operator==(const AudioBuffer& other) const;
 

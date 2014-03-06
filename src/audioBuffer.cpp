@@ -92,7 +92,7 @@ QAudioFormat::SampleType AudioBuffer::sampleType() const
 	return mFormat.sampleType();
 }
 
-AudioBuffer AudioBuffer::subBuffer(int pos, int length)
+AudioBuffer AudioBuffer::subBuffer(int pos, int length) const
 {
 	int ss = sampleSize();
 	if (length != -1) {

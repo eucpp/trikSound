@@ -58,7 +58,8 @@ HEADERS += \
     include/filters/soundCaptureFilter.h \
     include/filters/playbackFilter.h \
     include/filters/commandRecognitionFilter.h \
-    include/trikSound.h
+    include/trikSound.h \
+    include/filters/wavFilePlaybackFilter.h
 
 unix:!symbian {
     maemo5 {

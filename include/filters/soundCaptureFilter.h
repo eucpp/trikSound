@@ -16,15 +16,32 @@ class TRIKSOUNDSHARED_EXPORT SoundCaptureFilter : public AudioFilter
 {
 	Q_OBJECT
 public:
-	explicit SoundCaptureFilter(SoundRecorder* recorder, QObject* parent = NULL):
-		AudioFilter(parent)
+	explicit SoundCaptureFilter(const QSharedPointer<SoundRecorder>& recorder, QObject* parent = NULL):
+		AudioFilter(parent),
+		mRecorder(recorder)
 	{
-		connect(recorder, SIGNAL(captured(AudioBuffer)), this, SIGNAL(output(AudioBuffer)));
+		connect(mRecorder.data(), SIGNAL(captured(AudioBuffer)), this, SIGNAL(output(AudioBuffer)));
 	}
 
+	QSharedPointer<SoundRecorder> getRecorder() const;
+	void setRecorder(const QSharedPointer<SoundRecorder>& recorder);
 public slots:
 	void input(AudioBuffer buf);
+private:
+	QSharedPointer<SoundRecorder> mRecorder;
 };
+
+inline QSharedPointer<SoundRecorder> SoundCaptureFilter::getRecorder() const
+{
+	return mRecorder;
+}
+
+inline void SoundCaptureFilter::setRecorder(const QSharedPointer<SoundRecorder>& recorder)
+{
+	mRecorder->stop();
+	mRecorder = recorder;
+	connect(mRecorder.data(), SIGNAL(captured(AudioBuffer)), this, SIGNAL(output(AudioBuffer)));
+}
 
 inline void SoundCaptureFilter::input(AudioBuffer buf)
 {
