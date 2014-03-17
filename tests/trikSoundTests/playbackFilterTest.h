@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QDebug>
 
+
 #include "filters/playbackFilter.h"
 #include "wavFile.h"
 
@@ -21,9 +22,12 @@ public:
 		playback.reset(new triksound::PlaybackFilter(file.getHeader(),
 					   QAudioDeviceInfo::defaultOutputDevice(),
 					   file.getHeader().sampleRate() * 10));
+		playback->setPlayMode(triksound::PlaybackFilter::ON_INPUT);
 		// 2 sec - interval of reading from file
 		timer.setInterval(2 * 1000);
 		connect(&timer, SIGNAL(timeout()), this, SLOT(play()));
+		connect(playback->getAudioOutput().data(), SIGNAL(stateChanged(QAudio::State)), this, SLOT(printState(QAudio::State)));
+		playback->start();
 	}
 
 public slots:
@@ -44,6 +48,10 @@ private slots:
 			timer.stop();
 		}
 		playback->input(buf);
+	}
+	void printState(QAudio::State state)
+	{
+		qDebug() << "State changed: " << state;
 	}
 
 private:

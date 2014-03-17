@@ -12,7 +12,9 @@ class TRIKSOUNDSHARED_EXPORT WavFilePlaybackFilter : public AudioFilter
 {
 	Q_OBJECT
 public:
-	explicit WavFilePlaybackFilter(const QString& filename, QObject *parent = 0);
+	explicit WavFilePlaybackFilter(const QString& filename,
+								   const QAudioFormat& format,
+								   QObject *parent = 0);
 
 	QSharedPointer<WavFile> getFile() const;
 public slots:
@@ -21,11 +23,13 @@ private:
 	QSharedPointer<WavFile> mFile;
 };
 
-inline WavFilePlaybackFilter::WavFilePlaybackFilter(const QString& filename, QObject* parent):
+inline WavFilePlaybackFilter::WavFilePlaybackFilter(const QString& filename,
+													const QAudioFormat& format,
+													QObject* parent):
 	AudioFilter(parent)
 {
 	mFile = QSharedPointer<WavFile>(new WavFile(filename));
-	mFile->open(WavFile::WriteOnly);
+	mFile->open(WavFile::WriteOnly, format);
 }
 
 inline QSharedPointer<WavFile> WavFilePlaybackFilter::getFile() const

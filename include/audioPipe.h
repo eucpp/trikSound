@@ -16,13 +16,24 @@ class TRIKSOUNDSHARED_EXPORT AudioPipe : public QObject
 {
 	Q_OBJECT
 public:
-	explicit AudioPipe(const AudioFilter& in, const AudioFilter& out, QObject *parent = 0);
+	explicit AudioPipe(AudioFilter* in, AudioFilter* out, QObject *parent = 0);
+	~AudioPipe()
+	{
+		disconnect(mIn, SIGNAL(output(AudioBuffer)), mOut, SLOT(input(AudioBuffer)));
+	}
+
+private:
+	AudioFilter* mIn;
+	AudioFilter* mOut;
 };
 
-inline AudioPipe::AudioPipe(const AudioFilter& in, const AudioFilter& out, QObject* parent):
+inline AudioPipe::AudioPipe(AudioFilter* in, AudioFilter* out, QObject* parent):
+	mIn(in),
+	mOut(out),
 	QObject(parent)
 {
-	connect(&in, SIGNAL(output(AudioBuffer)), &out, SLOT(input(AudioBuffer)));
+
+	connect(in, SIGNAL(output(AudioBuffer)), out, SLOT(input(AudioBuffer)));
 }
 
 }
