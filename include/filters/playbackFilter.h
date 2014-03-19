@@ -96,9 +96,15 @@ inline void PlaybackFilter::setPlayMode(PlaybackFilter::PlayMode mode)
 
 inline void PlaybackFilter::input(AudioBuffer buf)
 {
+	qDebug() << "circular buffer size " << mBuffer.capacity();
+	qDebug() << "audio buffer size " << buf.size();
+	qDebug() << "internal audio output bytes free" << mOut->bytesFree();
+
 	if (buf.getFormat() == mOut->format()) {
 		mBuffer.write(buf.bytes());
-		if ((mMode == ON_INPUT) && (mOut->state() != QAudio::ActiveState)) {
+		if ((mMode == ON_INPUT) && (mOut->state() == QAudio::IdleState)) {
+			mOut->stop();
+			mOut->reset();
 			mOut->start(&mBuffer);
 		}
 	}

@@ -24,7 +24,7 @@ public:
 					   file.getHeader().sampleRate() * 10));
 		playback->setPlayMode(triksound::PlaybackFilter::ON_INPUT);
 		// 2 sec - interval of reading from file
-		timer.setInterval(2 * 1000);
+		timer.setInterval(6 * 1000);
 		connect(&timer, SIGNAL(timeout()), this, SLOT(play()));
 		connect(playback->getAudioOutput().data(), SIGNAL(stateChanged(QAudio::State)), this, SLOT(printState(QAudio::State)));
 		playback->start();
@@ -52,6 +52,7 @@ private slots:
 	void printState(QAudio::State state)
 	{
 		qDebug() << "State changed: " << state;
+		qDebug() << "Error: " << playback->getAudioOutput()->error();
 	}
 
 private:
