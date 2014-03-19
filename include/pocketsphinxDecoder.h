@@ -24,17 +24,14 @@ public:
 	class TRIKSOUNDSHARED_EXPORT Command
 	{
 	public:
-		Command(const QString& cmd, double accur):
-			mText(cmd),
-			mAccuracy(accur)
+		Command(const QString& cmd):
+			mText(cmd)
 		{}
 
 		QString getText() const;
-		double getAccuracy() const;
 
 	private:
 		QString mText;
-		double mAccuracy;
 	};
 
 	enum InitError {
@@ -115,11 +112,6 @@ inline PocketsphinxDecoder::RecognitionError PocketsphinxDecoder::recognitionErr
 inline QString PocketsphinxDecoder::Command::getText() const
 {
 	return mText;
-}
-
-inline double PocketsphinxDecoder::Command::getAccuracy() const
-{
-	return mAccuracy;
 }
 
 }

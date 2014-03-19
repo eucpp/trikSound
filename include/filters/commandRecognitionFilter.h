@@ -55,8 +55,14 @@ inline CommandRecognitionFilter::CommandRecognitionFilter(const QSharedPointer<P
 
 inline void CommandRecognitionFilter::input(AudioBuffer buf)
 {
-	PocketsphinxDecoder::Command cmd = mDecoder->recognize(buf);
-	mStream->operator <<( cmd.getText());
+	QString cmd = mDecoder->recognize(buf).getText();
+	if (cmd == "") {
+		(*mStream) << "Unrecognized command \n";
+	}
+	else {
+		(*mStream) << cmd << "\n";
+	}
+	mStream->flush();
 }
 
 }

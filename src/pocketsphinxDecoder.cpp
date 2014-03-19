@@ -65,14 +65,12 @@ PocketsphinxDecoder::Command PocketsphinxDecoder::recognize(AudioBuffer buffer)
 
 	const char* str = NULL;
 	QString qstr = "";
-	double accuracy = 0;
 	int score;
 	str = ps_get_hyp(mDecoder, &score, &uttid);
 	if (str != NULL) {
-		qstr = str;
-		accuracy = - static_cast<double>(ps_get_prob(mDecoder, &uttid)) / MAX_INT16;
+		qstr = QString::fromUtf8(str);
 	}
-	Command cmd(qstr, accuracy);
+	Command cmd(qstr);
 
 	emit recognized(cmd);
 	return cmd;
