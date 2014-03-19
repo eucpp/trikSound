@@ -156,7 +156,7 @@ qint64 CircularBuffer::writeData(const char *data, qint64 len)
 {
 	int reserve = 0;
 	if (mBuffer->reserve() == 0) {
-		std::distance((mBuffer->begin() + mPos), mBuffer->end());
+//		reserve = std::distance((mBuffer->begin() + mPos), mBuffer->end());
 	}
 	else {
 		reserve = mBuffer->reserve();
