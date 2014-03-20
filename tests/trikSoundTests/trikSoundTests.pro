@@ -34,11 +34,15 @@ TEMPLATE = app
 
 INCLUDEPATH+= ../../include/
 
+INCLUDEPATH += /usr/local/include/sphinxbase /usr/local/include/pocketsphinx
+
 LIBS+= -L/usr/lib -ltrikSound
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    recognitionAccuracyTester.cpp
 
 HEADERS += \
     wavFileTest.h \
     circularBufferTest.h \
-    playbackFilterTest.h
+    playbackFilterTest.h \
+    recognitionAccuracyTester.h
