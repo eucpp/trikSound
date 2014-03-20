@@ -45,6 +45,16 @@ public:
 		PROCESS_ERROR
 	};
 
+	struct InitParams {
+		QString ds; // 1
+		QString topn; // 4
+		QString lpbeam; // 1e-40
+		QString lponlybeam; // 7e-27
+		QString maxwpf; // -1
+		QString maxhmmpf; // -1
+	};
+	static InitParams getDefaultInitParams();
+
 	/**
 	  * @param pathToHmm Path to acoustic model file.
 	  * @param pathToLm Path to grammar file.
@@ -52,7 +62,9 @@ public:
 	  */
 	PocketsphinxDecoder(QString pathToHmm = defaultHmm,
 						QString pathToLm = defaultLm,
-						QString pathToDict = defaultDict);
+						QString pathToDict = defaultDict,
+						InitParams params = getDefaultInitParams()
+						);
 	~PocketsphinxDecoder();
 
 	/**
@@ -68,6 +80,7 @@ public:
 	 * @brief Returns the type of error that last occurred during the recognition.
 	 */
 	RecognitionError recognitionError() const;
+
 
 	static const QString defaultHmm;
 	static const QString defaultLm;

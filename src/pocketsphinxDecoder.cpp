@@ -1,4 +1,4 @@
-#include "include/pocketsphinxDecoder.h"
+#include "pocketsphinxDecoder.h"
 
 #include <QDebug>
 
@@ -8,7 +8,10 @@ const QString PocketsphinxDecoder::defaultHmm = "";
 const QString PocketsphinxDecoder::defaultLm = "";
 const QString PocketsphinxDecoder::defaultDict = "";
 
-PocketsphinxDecoder::PocketsphinxDecoder(QString pathToHmm, QString pathToLm, QString pathToDict):
+PocketsphinxDecoder::PocketsphinxDecoder(QString pathToHmm,
+										 QString pathToLm,
+										 QString pathToDict,
+										 PocketsphinxDecoder::InitParams params):
 	mDecoder(NULL),
 	mConfig(NULL),
 	mIsReady(false)
@@ -17,6 +20,12 @@ PocketsphinxDecoder::PocketsphinxDecoder(QString pathToHmm, QString pathToLm, QS
 						 "-hmm", pathToHmm.toAscii().data(),
 						 "-fsg", pathToLm.toAscii().data(),
 						 "-dict", pathToDict.toAscii().data(),
+						  "-ds", params.ds.toAscii().data(),
+						  "-topn", params.topn.toAscii().data(),
+						  "-lpbeam", params.lpbeam.toAscii().data(),
+						  "-lponlybeam", params.lponlybeam.toAscii().data(),
+						  "-maxwpf", params.maxwpf.toAscii().data(),
+						  "-maxhmmpf", params.maxhmmpf.toAscii().data(),
 						 NULL);
 	if (mConfig == NULL) {
 		mIsReady = false;
@@ -36,6 +45,18 @@ PocketsphinxDecoder::PocketsphinxDecoder(QString pathToHmm, QString pathToLm, QS
 PocketsphinxDecoder::~PocketsphinxDecoder()
 {
 	ps_free(mDecoder);
+}
+
+PocketsphinxDecoder::InitParams PocketsphinxDecoder::getDefaultInitParams()
+{
+	InitParams defParams;
+	defParams.ds = "1";
+	defParams.topn = "4";
+	defParams.lpbeam = "1e-40";
+	defParams.lponlybeam = "7e-27";
+	defParams.maxwpf = "-1";
+	defParams.maxhmmpf = "-1";
+	return defParams;
 }
 
 PocketsphinxDecoder::Command PocketsphinxDecoder::recognize(AudioBuffer buffer)
