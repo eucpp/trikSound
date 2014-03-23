@@ -52,7 +52,10 @@ public:
 		QString lponlybeam; // 7e-27
 		QString maxwpf; // -1
 		QString maxhmmpf; // -1
+
+		bool operator==(const InitParams& other) const;
 	};
+
 	static InitParams getDefaultInitParams();
 
 	/**
@@ -125,6 +128,16 @@ inline PocketsphinxDecoder::RecognitionError PocketsphinxDecoder::recognitionErr
 inline QString PocketsphinxDecoder::Command::getText() const
 {
 	return mText;
+}
+
+inline bool PocketsphinxDecoder::InitParams::operator==(const InitParams& other) const
+{
+	if (this == &other) {
+		return true;
+	}
+	return ((this->ds == other.ds) && (this->lpbeam == other.lpbeam)
+			&& (this->lponlybeam == other.lponlybeam) && (this->maxhmmpf == other.maxhmmpf)
+			&& (this->maxwpf == other.maxhmmpf) && (this->topn == other.topn));
 }
 
 }

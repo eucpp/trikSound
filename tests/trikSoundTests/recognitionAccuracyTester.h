@@ -1,13 +1,15 @@
 #ifndef RECOGNITIONACCURACYTESTER_H
 #define RECOGNITIONACCURACYTESTER_H
 
+#include <QObject>
 #include <QFile>
 #include <QTextStream>
 
 #include <trikSound/pocketsphinxDecoder.h>
 
-class RecognitionAccuracyTester
+class RecognitionAccuracyTester : public QObject
 {
+	Q_OBJECT
 public:
 	RecognitionAccuracyTester();
 
@@ -35,8 +37,10 @@ private:
 	};
 
 	void runTests();
-	//
+	// extracts param ranges from input file
 	QList<ParamRange> extractParams();
+	//
+	void runTestsForRange(const ParamRange& range);
 	//
 	Report getReport(triksound::PocketsphinxDecoder::InitParams params);
 
@@ -48,6 +52,7 @@ private:
 
 	QFile mParamsFile;
 	QFile mPhrasesFile;
+	QString mPhrasesDir;
 	QFile mOutFile;
 	QTextStream mOut;
 
@@ -55,6 +60,12 @@ private:
 	QString mHmm;
 	QString mFsg;
 	QString mDic;
+
+	// some unit tests of inner logic
+private slots:
+	void testExtractPhraseData();
+	void testGetReport();
+	void testPrintReport();
 };
 
 #endif // RECOGNITIONACCURACYTESTER_H
