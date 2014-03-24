@@ -22,7 +22,7 @@ trik {
 
     DEFINES += TRIK
 
-    BUILD_FOLDER = ../trik-build-robotVoice-debug
+    BUILD_FOLDER = ../trik-build-trikSoundTest-debug
     DESTDIR = $$BUILD_FOLDER/
     OBJECTS_DIR = $$BUILD_FOLDER/
     MOC_DIR = $$BUILD_FOLDER/

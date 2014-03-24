@@ -10,19 +10,32 @@
 
 using namespace triksound;
 
-RecognitionAccuracyTester::RecognitionAccuracyTester():
-	QObject()
+RecognitionAccuracyTester::RecognitionAccuracyTester(const QString& hmm,
+													 const QString& fsg,
+													 const QString& dic,
+													 const QString& paramsFile,
+													 const QString& phrasesFile,
+													 const QString& audioDir):
+	mHmm(hmm),
+	mFsg(fsg),
+	mDic(dic),
+	mParamsFile(paramsFile),
+	mPhrasesFile(phrasesFile),
+	mPhrasesDir(audioDir)
 {
+	mParamsFile.open(QIODevice::ReadOnly);
+	mPhrasesFile.open(QIODevice::ReadOnly);
+//	mOutFile.open(QIODevice::WriteOnly);
+//	mOut.setDevice(&mOutFile);
 }
 
-void RecognitionAccuracyTester::test()
+void RecognitionAccuracyTester::run()
 {
-
-}
-
-void RecognitionAccuracyTester::runTests()
-{
-
+	QList<ParamRange> rangeList = extractParams();
+	QList<ParamRange>::iterator itr;
+	for (itr = rangeList.begin(); itr != rangeList.end(); itr++) {
+		runTestsForRange(*itr);
+	}
 }
 
 QList<RecognitionAccuracyTester::ParamRange> RecognitionAccuracyTester::extractParams()
@@ -31,6 +44,7 @@ QList<RecognitionAccuracyTester::ParamRange> RecognitionAccuracyTester::extractP
 	QByteArray bytes;
 	while ((bytes = mParamsFile.readLine()).size() != 0) {
 		QString line = QString::fromUtf8(bytes.data(), bytes.size());
+		line.remove('\n');
 		ParamRange paramRange;
 		QStringList list = line.split(' ', QString::SkipEmptyParts);
 		paramRange.paramName = list.at(0);
@@ -44,6 +58,10 @@ QList<RecognitionAccuracyTester::ParamRange> RecognitionAccuracyTester::extractP
 
 void RecognitionAccuracyTester::runTestsForRange(const RecognitionAccuracyTester::ParamRange& range)
 {
+	mOutFile.setFileName("test_out_" + range.paramName);
+	mOutFile.open(QIODevice::WriteOnly);
+	mOut.setDevice(&mOutFile);
+
 	PocketsphinxDecoder::InitParams params = PocketsphinxDecoder::getDefaultInitParams();
 	if ((range.paramName == "ds") || (range.paramName == "topn") ||
 			(range.paramName == "maxwpf") || (range.paramName == "maxhmmpf")) {
@@ -97,7 +115,7 @@ void RecognitionAccuracyTester::runTestsForRange(const RecognitionAccuracyTester
 			qDebug() << "Recognition accuracy test error. Param " << range.paramName
 					 << " has incorrect 'step' value = " << range.step;
 		}
-		for (float i = from; i <= to; i += step) {
+		for (float i = from; i <= to; i *= step) {
 			if (range.paramName == "lpbeam") {
 				params.lpbeam = QString().setNum(i);
 			}
@@ -154,6 +172,8 @@ RecognitionAccuracyTester::Report RecognitionAccuracyTester::getReport(Pocketsph
 
 	rep.recTime /= countFiles;
 
+	mPhrasesFile.reset();
+
 	return rep;
 }
 
@@ -209,6 +229,22 @@ void RecognitionAccuracyTester::printReport(const Report& rep, const Pocketsphin
 
 	mOut << "----------------------------------------------------------------------------------- \n";
 	mOut.flush();
+
+	static int counter = 1;
+	qDebug() << "Finish test #" << counter++;
+}
+
+void RecognitionAccuracyTester::testExtractParams()
+{
+	mParamsFile.setFileName("unit_test_data/params");
+	mParamsFile.open(QIODevice::ReadOnly);
+	QList<ParamRange> actual = extractParams();
+
+	ParamRange range1 = {"ds", "1", "5", "1"};
+	ParamRange range2 = {"topn", "5", "7", "2"};
+
+	QCOMPARE(actual.at(0), range1);
+	QCOMPARE(actual.at(1), range2);
 }
 
 
@@ -262,4 +298,14 @@ void RecognitionAccuracyTester::testPrintReport()
 
 	Report rep = getReport(PocketsphinxDecoder::getDefaultInitParams());
 	printReport(rep, PocketsphinxDecoder::getDefaultInitParams());
+}
+
+
+bool RecognitionAccuracyTester::ParamRange::operator==(const RecognitionAccuracyTester::ParamRange& other) const
+{
+	if (this == &other) {
+		return true;
+	}
+	return ((this->paramName == other.paramName) && (this->from == other.from)
+			&& (this->to == other.to) && (this->step == other.step));
 }

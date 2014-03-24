@@ -11,9 +11,14 @@ class RecognitionAccuracyTester : public QObject
 {
 	Q_OBJECT
 public:
-	RecognitionAccuracyTester();
+	RecognitionAccuracyTester(const QString& hmm,
+							  const QString& fsg,
+							  const QString& dic,
+							  const QString& paramsFile,
+							  const QString& phrasesFile,
+							  const QString& audioDir);
 
-	void test();
+	void run();
 
 private:
 	// report of recognition accuracy and performance
@@ -34,14 +39,15 @@ private:
 		QString from;
 		QString to;
 		QString step;
+
+		bool operator==(const ParamRange& other) const;
 	};
 
-	void runTests();
 	// extracts param ranges from input file
 	QList<ParamRange> extractParams();
-	//
+	// run tests for all parameters in range
 	void runTestsForRange(const ParamRange& range);
-	//
+	// returns report about test with passed params
 	Report getReport(triksound::PocketsphinxDecoder::InitParams params);
 
 	// extracts phrase text and audio data binded with this text from string,
@@ -63,6 +69,7 @@ private:
 
 	// some unit tests of inner logic
 private slots:
+	void testExtractParams();
 	void testExtractPhraseData();
 	void testGetReport();
 	void testPrintReport();
