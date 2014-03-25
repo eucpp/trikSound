@@ -2,6 +2,8 @@
 
 #include <QDebug>
 
+#include "trikInputDeviceManager.h"
+
 using namespace triksound;
 
 SoundRecorder::SoundRecorder(const QAudioFormat& format, size_t frameLength):
@@ -10,16 +12,25 @@ SoundRecorder::SoundRecorder(const QAudioFormat& format, size_t frameLength):
 	mBuffer(frameLength * 10),
 	mFrameLength(frameLength)
 {
+	#ifdef TRIK
+		mDevice.reset(new TrikInputDeviceManager());
+	#else
+		mDevice.reset(new DeviceManager());
+	#endif
 	mBuffer.open(QIODevice::ReadWrite);
 	connect(&mBuffer, SIGNAL(readyRead()), this, SLOT(readyReadHandler()));
 }
 
 SoundRecorder::SoundRecorder(const QAudioDeviceInfo& device, const QAudioFormat& format, size_t frameLength):
-	mDevice(device),
 	mAudioInput(mDevice, format),
 	mBuffer(frameLength * 10),
 	mFrameLength(frameLength)
 {
+	#ifdef TRIK
+		mDevice.reset(new TrikInputDeviceManager(device));
+	#else
+		mDevice.reset(new DeviceManager(device));
+	#endif
 	mBuffer.open(QIODevice::ReadWrite);
 	connect(&mBuffer, SIGNAL(readyRead()), this, SLOT(readyReadHandler()));
 }
@@ -45,18 +56,22 @@ QAudioFormat SoundRecorder::getFormat() const
 
 QAudioDeviceInfo SoundRecorder::getDevice() const
 {
-	return mDevice;
+	return mDevice->getDevice();
 }
 
 void SoundRecorder::start()
 {
+	if (!mDevice->isReady()) {
+		if (!mDevice->init()) {
+			emit error(DEVICE_INIT_ERROR);
+			return;
+		}
+	}
 	mAudioInput.start(&mBuffer);
 }
 
 void SoundRecorder::stop()
 {
-	qDebug() << "stop";
-
 	mAudioInput.stop();
 	//disconnect(&mBuffer, SIGNAL(readyRead()), this, SLOT(readyReadHandler()));
 }

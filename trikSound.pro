@@ -43,7 +43,9 @@ SOURCES += \
     src/soundRecorder.cpp \
     src/circularBuffer.cpp \
     src/audioBuffer.cpp \
-    src/pocketsphinxDecoder.cpp
+    src/pocketsphinxDecoder.cpp \
+    trikInputDeviceManager.cpp \
+    src/trikInputDeviceManager.cpp
 
 HEADERS += \
     include/trikSound_global.h \
@@ -59,7 +61,11 @@ HEADERS += \
     include/filters/playbackFilter.h \
     include/filters/commandRecognitionFilter.h \
     include/trikSound.h \
-    include/filters/wavFilePlaybackFilter.h
+    include/filters/wavFilePlaybackFilter.h \
+    deviceManager.h \
+    trikInputDeviceManager.h \
+    include/trikInputDeviceManager.h \
+    include/deviceManager.h
 
 unix:!symbian {
     maemo5 {
