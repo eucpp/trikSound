@@ -2,9 +2,11 @@
 #define COMMANDRECOGNITIONFILTER_H
 
 #include <cstdio>
+#include <ctime>
 
 #include <QTextStream>
 #include <QSharedPointer>
+#include <QDebug>
 
 #include "audioFilter.h"
 #include "../pocketsphinxDecoder.h"
@@ -55,7 +57,10 @@ inline CommandRecognitionFilter::CommandRecognitionFilter(const QSharedPointer<P
 
 inline void CommandRecognitionFilter::input(AudioBuffer buf)
 {
+	clock_t c1 = clock();
 	QString cmd = mDecoder->recognize(buf).getText();
+	clock_t c2 = clock();
+	qDebug() << "PS time = " << (c2 - c1) / (CLOCKS_PER_SEC / 1000);
 	if (cmd == "") {
 		(*mStream) << "Unrecognized command \n";
 	}
