@@ -12,6 +12,7 @@
 #include "trikSound_global.h"
 #include "circularBuffer.h"
 #include "filters/audioFilter.h"
+#include "deviceManager.h"
 
 namespace triksound {
 
@@ -27,6 +28,10 @@ class TRIKSOUNDSHARED_EXPORT SoundRecorder : public QObject
 {
 	Q_OBJECT
 public:
+	enum Error {
+		DEVICE_INIT_ERROR
+	};
+
 	/**
 	 * @brief Construct new SoundRecorder with default audio input device.
 	 * @param format Capture format
@@ -65,6 +70,7 @@ signals:
 	 * @param frame Buffer containing new frame.
 	 */
 	void captured(const AudioBuffer& frame);
+	void error(Error);
 public slots:
 	/**
 	 * @brief Start audio capture
@@ -78,7 +84,7 @@ private slots:
 	void readyReadHandler();
 
 private:
-	QAudioDeviceInfo mDevice;
+	QScopedPointer<DeviceManager> mDevice;
 	QAudioInput mAudioInput;
 	CircularBuffer mBuffer;
 
