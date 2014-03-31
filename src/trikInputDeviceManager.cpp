@@ -8,27 +8,27 @@ TrikInputDeviceManager::TrikInputDeviceManager(const QAudioDeviceInfo& device):
 	mIsReady(false)
 {}
 
-void TrikInputDeviceManager::init()
+bool TrikInputDeviceManager::init()
 {
 	bool err = false;
 	int res = 0;
-	res = QProcess::execute("amixer", "set \"Right PGA Mixer Mic3R\" on");
+	res = QProcess::execute("amixer", QStringList("set \"Right PGA Mixer Mic3R\" on"));
 	if (res < 0) {
 		err = true;
 	}
-	res = QProcess::execute("amixer", "set \"Left PGA Mixer Mic3R\" on");
+	res = QProcess::execute("amixer", QStringList("set \"Left PGA Mixer Mic3R\" on"));
 	if (res < 0) {
 		err = true;
 	}
-	res = QProcess::execute("amixer", "set \"Left PGA Mixer Line2L\" on");
+	res = QProcess::execute("amixer", QStringList("set \"Left PGA Mixer Line2L\" on"));
 	if (res < 0) {
 		err = true;
 	}
-	res = QProcess::execute("amixer", "set AGC on");
+	res = QProcess::execute("amixer", QStringList("set AGC on"));
 	if (res < 0) {
 		err = true;
 	}
-	res = QProcess::execute("amixer", "set PGA " + QString().setNum(mMaxVol));
+	res = QProcess::execute("amixer", QStringList("set PGA " + QString().setNum(mMaxVol)));
 	if (res < 0) {
 		err = true;
 	}

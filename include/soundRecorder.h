@@ -85,7 +85,7 @@ private slots:
 
 private:
 	QScopedPointer<DeviceManager> mDevice;
-	QAudioInput mAudioInput;
+	QScopedPointer<QAudioInput> mAudioInput;
 	CircularBuffer mBuffer;
 
 	size_t mFrameLength;

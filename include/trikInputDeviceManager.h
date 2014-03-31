@@ -11,7 +11,7 @@ class TrikInputDeviceManager : public DeviceManager
 public:
 	TrikInputDeviceManager(const QAudioDeviceInfo& device = QAudioDeviceInfo::defaultInputDevice());
 
-	void init();
+	bool init();
 	bool isReady() const;
 
 	void setVolume(float vol);
@@ -24,7 +24,7 @@ private:
 	static const int mMaxVol;
 };
 
-bool TrikInputDeviceManager::isReady() const
+inline bool TrikInputDeviceManager::isReady() const
 {
 	return mIsReady;
 }

@@ -9,6 +9,7 @@ public:
 	DeviceManager(const QAudioDeviceInfo& device = QAudioDeviceInfo::defaultInputDevice()):
 		mDevice(device)
 	{}
+	virtual ~DeviceManager() {}
 
 	virtual bool init();
 	virtual bool isReady() const;
@@ -21,12 +22,12 @@ private:
 	QAudioDeviceInfo mDevice;
 };
 
-bool DeviceManager::init()
+inline bool DeviceManager::init()
 {
 	return true;
 }
 
-bool DeviceManager::isReady() const
+inline bool DeviceManager::isReady() const
 {
 	return true;
 }

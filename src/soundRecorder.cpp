@@ -7,8 +7,6 @@
 using namespace triksound;
 
 SoundRecorder::SoundRecorder(const QAudioFormat& format, size_t frameLength):
-	mDevice(QAudioDeviceInfo::defaultInputDevice()),
-	mAudioInput(mDevice, format),
 	mBuffer(frameLength * 10),
 	mFrameLength(frameLength)
 {
@@ -17,12 +15,12 @@ SoundRecorder::SoundRecorder(const QAudioFormat& format, size_t frameLength):
 	#else
 		mDevice.reset(new DeviceManager());
 	#endif
+	mAudioInput.reset(new QAudioInput(mDevice->getDevice(), format));
 	mBuffer.open(QIODevice::ReadWrite);
 	connect(&mBuffer, SIGNAL(readyRead()), this, SLOT(readyReadHandler()));
 }
 
 SoundRecorder::SoundRecorder(const QAudioDeviceInfo& device, const QAudioFormat& format, size_t frameLength):
-	mAudioInput(mDevice, format),
 	mBuffer(frameLength * 10),
 	mFrameLength(frameLength)
 {
@@ -31,6 +29,7 @@ SoundRecorder::SoundRecorder(const QAudioDeviceInfo& device, const QAudioFormat&
 	#else
 		mDevice.reset(new DeviceManager(device));
 	#endif
+	mAudioInput.reset(new QAudioInput(mDevice->getDevice(), format));
 	mBuffer.open(QIODevice::ReadWrite);
 	connect(&mBuffer, SIGNAL(readyRead()), this, SLOT(readyReadHandler()));
 }
@@ -42,7 +41,7 @@ size_t SoundRecorder::getFrameLength() const
 
 void SoundRecorder::setFrameLength(size_t length)
 {
-	if (mAudioInput.state() != QAudio::StoppedState) {
+	if (mAudioInput->state() != QAudio::StoppedState) {
 		return;
 	}
 	mFrameLength = length;
@@ -51,7 +50,7 @@ void SoundRecorder::setFrameLength(size_t length)
 
 QAudioFormat SoundRecorder::getFormat() const
 {
-	return mAudioInput.format();
+	return mAudioInput->format();
 }
 
 QAudioDeviceInfo SoundRecorder::getDevice() const
@@ -67,18 +66,18 @@ void SoundRecorder::start()
 			return;
 		}
 	}
-	mAudioInput.start(&mBuffer);
+	mAudioInput->start(&mBuffer);
 }
 
 void SoundRecorder::stop()
 {
-	mAudioInput.stop();
+	mAudioInput->stop();
 	//disconnect(&mBuffer, SIGNAL(readyRead()), this, SLOT(readyReadHandler()));
 }
 
 void SoundRecorder::readyReadHandler()
 {
 	if (mBuffer.bytesAvailable() > mFrameLength) {
-		emit captured(AudioBuffer(mBuffer.read(mFrameLength), mAudioInput.format()));
+		emit captured(AudioBuffer(mBuffer.read(mFrameLength), mAudioInput->format()));
 	}
 }

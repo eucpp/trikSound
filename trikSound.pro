@@ -30,7 +30,7 @@ trik {
 
     DEFINES += TRIK
 
-    BUILD_FOLDER = ../trik-build-robotVoice-debug
+    BUILD_FOLDER = ../trik-build-trikSound-debug
     DESTDIR = $$BUILD_FOLDER/
     OBJECTS_DIR = $$BUILD_FOLDER/
     MOC_DIR = $$BUILD_FOLDER/
@@ -44,7 +44,6 @@ SOURCES += \
     src/circularBuffer.cpp \
     src/audioBuffer.cpp \
     src/pocketsphinxDecoder.cpp \
-    trikInputDeviceManager.cpp \
     src/trikInputDeviceManager.cpp
 
 HEADERS += \
@@ -62,8 +61,6 @@ HEADERS += \
     include/filters/commandRecognitionFilter.h \
     include/trikSound.h \
     include/filters/wavFilePlaybackFilter.h \
-    deviceManager.h \
-    trikInputDeviceManager.h \
     include/trikInputDeviceManager.h \
     include/deviceManager.h
 
