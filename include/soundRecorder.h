@@ -64,6 +64,14 @@ public:
 	  *
 	  */
 	QAudioDeviceInfo getDevice() const;
+	/**
+	  *
+	  */
+	void setVolume(float vol);
+	/**
+	  *
+	  */
+	float volume() const;
 signals:
 	/**
 	 * @brief This signal is emited when the new frame is captured.

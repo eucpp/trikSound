@@ -58,6 +58,16 @@ QAudioDeviceInfo SoundRecorder::getDevice() const
 	return mDevice->getDevice();
 }
 
+void SoundRecorder::setVolume(float vol)
+{
+	mDevice->setVolume(vol);
+}
+
+float SoundRecorder::volume() const
+{
+	return mDevice->volume();
+}
+
 void SoundRecorder::start()
 {
 	if (!mDevice->isReady()) {
