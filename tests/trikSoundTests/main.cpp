@@ -35,24 +35,24 @@ void myMessageHandler(QtMsgType type, const char *msg)
 int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
-	qInstallMsgHandler(myMessageHandler);
+//	qInstallMsgHandler(myMessageHandler);
 
-//	WavFileTest test1;
-//	QTest::qExec(&test1);
+	WavFileTest test1;
+	QTest::qExec(&test1);
 
-//	CircularBufferTest test2;
-//	QTest::qExec(&test2);
+	CircularBufferTest test2;
+	QTest::qExec(&test2);
 
-//	PlaybackFilterTest test3(argv[1]);
-//	QTimer::singleShot(1000, &test3, SLOT(playbackTest()));
+	PlaybackFilterTest test3(argv[1]);
+	QTimer::singleShot(1000, &test3, SLOT(playbackTest()));
 
-	if (argc != 7) {
-		qDebug() << "Incorrect params num";
-	}
-	else {
-		RecognitionAccuracyTester tester(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6]);
-		tester.run();
-	}
+//	if (argc != 7) {
+//		qDebug() << "Incorrect params num";
+//	}
+//	else {
+//		RecognitionAccuracyTester tester(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6]);
+//		tester.run();
+//	}
 
 //	QTest::qExec(&tester);
 
