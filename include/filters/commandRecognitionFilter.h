@@ -60,12 +60,12 @@ inline void CommandRecognitionFilter::input(AudioBuffer buf)
 	clock_t c1 = clock();
 	QString cmd = mDecoder->recognize(buf).getText();
 	clock_t c2 = clock();
-	qDebug() << "PS time = " << (c2 - c1) / (CLOCKS_PER_SEC / 1000);
+//	qDebug() << "PS time = " << (c2 - c1) / (CLOCKS_PER_SEC / 1000);
 	if (cmd == "") {
-		(*mStream) << "Unrecognized command \n";
+		(*mStream) << "\n Unrecognized command \n";
 	}
 	else {
-		(*mStream) << cmd << "\n";
+		(*mStream) << "\n" << cmd << "\n";
 	}
 	mStream->flush();
 }
